@@ -1,0 +1,6 @@
+{
+  "appTitle": "tap_books",
+  "@appTitle": {
+    "description": "The title of the application"
+  }
+}
