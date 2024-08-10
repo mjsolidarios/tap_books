@@ -19,8 +19,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_markdown: ^0.7.3+1
+  flutter_svg: ^2.0.10+1
   google_generative_ai: ^0.4.4
   lottie: ^3.1.2
+  splash_view: ^2.0.1
   uuid: ^4.4.2
 
 dev_dependencies:
@@ -38,5 +40,13 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/images/
+    - assets/animations/
     - assets/messages.json
     - .env
+  
+  fonts:
+  - family: Poppins
+    fonts:
+      - asset: assets/fonts/Poppins/Poppins-Regular.ttf
+      - asset: assets/fonts/Poppins/Poppins-Italic.ttf
+        style: italic

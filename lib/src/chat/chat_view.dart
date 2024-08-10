@@ -6,7 +6,7 @@ import 'package:tap_books/src/widgets/chat_input_box.dart';
 class ChatView extends StatefulWidget {
   const ChatView({super.key});
 
-  static const routeName = "/";
+  static const routeName = "/chat";
 
   @override
   State<ChatView> createState() => _ChatViewState();
