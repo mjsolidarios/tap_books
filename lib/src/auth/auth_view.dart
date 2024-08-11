@@ -33,15 +33,17 @@ class _AuthViewState extends State<AuthView> with TickerProviderStateMixin {
     return Container(
         child: Column(
       children: [
-        SvgPicture.asset('assets/images/app_brand.svg',
-            semanticsLabel: 'TapBooks'),
         Lottie.asset('assets/animations/app_brand_light.json',
             controller: _controller,  
             onLoaded: (composition) {
                 _controller
                   ..duration = composition.duration
                   ..forward();
-              })
+              },
+              width: 200,
+              height: 200
+              ),
+              ElevatedButton(onPressed: (){}, child: const Text("Login"))
       ],
     ));
   }

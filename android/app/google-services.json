@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "257869758671",
+    "project_id": "tapbooks-ad97a",
+    "storage_bucket": "tapbooks-ad97a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257869758671:android:e7badb0eb189f240a937ba",
+        "android_client_info": {
+          "package_name": "com.tapbooks.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "257869758671-k8cb501mqsb0lrlrbc4imrucfqo6ror5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0ju0hOw1npQhrISQ5wJzi5NxDnKmV8zM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "257869758671-k8cb501mqsb0lrlrbc4imrucfqo6ror5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "257869758671-l01jdivla2lbf556inds1epdm9apd4p4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tapBooks"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

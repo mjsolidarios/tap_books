@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:tap_books/src/auth/auth_gate.dart';
 import 'package:tap_books/src/auth/auth_view.dart';
 import 'package:tap_books/src/chat/chat_view.dart';
 
@@ -14,6 +17,8 @@ class MyApp extends StatelessWidget {
   const MyApp({
     super.key,
     required this.settingsController,
+    required this.app,
+    required this.auth
   });
 
   initState() {
@@ -22,6 +27,8 @@ class MyApp extends StatelessWidget {
   }
 
 
+  final FirebaseApp app;
+  final FirebaseAuth auth;
   final SettingsController settingsController;
 
   @override
@@ -40,44 +47,12 @@ class MyApp extends StatelessWidget {
           supportedLocales: const [
             Locale('en', ''), // English, no country code
           ],
-
-          // Use AppLocalizations to configure the correct application title
-          // depending on the user's locale.
-          //
-          // The appTitle is defined in .arb files found in the localization
-          // directory.
           onGenerateTitle: (BuildContext context) =>
               AppLocalizations.of(context)!.appTitle,
-
-          // Define a light and dark color theme. Then, read the user's
-          // preferred ThemeMode (light, dark, or system default) from the
-          // SettingsController to display the correct theme.
           theme: ThemeData(fontFamily: "Poppins"),
           darkTheme: ThemeData.dark(),
           themeMode: settingsController.themeMode,
-
-          // Define a function to handle named routes in order to support
-          // Flutter web url navigation and deep linking.
-          onGenerateRoute: (RouteSettings routeSettings) {
-            return MaterialPageRoute<void>(
-              settings: routeSettings,
-              builder: (BuildContext context) {
-                switch (routeSettings.name) {
-                  case SettingsView.routeName:
-                    return SettingsView(controller: settingsController);
-                  case AuthView.routeName:
-                    return const AuthView();
-                  case SampleItemDetailsView.routeName:
-                    return const SampleItemDetailsView();
-                  case ChatView.routeName:
-                    return const ChatView();
-                  case SampleItemListView.routeName:
-                  default:
-                    return const SampleItemListView();
-                }
-              },
-            );
-          },
+          home: AuthGate()
         );
       },
     );
