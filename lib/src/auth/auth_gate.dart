@@ -30,7 +30,6 @@ class _AuthGateState extends State<AuthGate> with TickerProviderStateMixin {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        print(dotenv.env['GOOGLE_AUTH_CLIENT_ID']!);
         if (!snapshot.hasData) {
           return SignInScreen(
             providers: [
@@ -68,7 +67,6 @@ class _AuthGateState extends State<AuthGate> with TickerProviderStateMixin {
             },
           );
         }
-
         return ChatView();
       },
     );

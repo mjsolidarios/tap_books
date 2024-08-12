@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:tap_books/main.dart';
 import 'package:tap_books/src/widgets/chat_input_box.dart';
 
 class ChatView extends StatefulWidget {
@@ -24,45 +27,50 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-            child: chats.isNotEmpty
-                ? Align(
-                    alignment: Alignment.bottomCenter,
-                    child: SingleChildScrollView(
-                      reverse: true,
-                      child: ListView.builder(
-                        itemBuilder: chatItem,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: chats.length,
-                        reverse: false,
-                      ),
-                    ),
-                  )
-                : const Center(child: Text('Search something!'))),
-        if (loading) const CircularProgressIndicator(),
-        ChatInputBox(
-          controller: controller,
-          onSend: () {
-            if (controller.text.isNotEmpty) {
-              final searchedText = controller.text;
-              chats.add(
-                  Content(role: 'user', parts: [Parts(text: searchedText)]));
-              controller.clear();
-              loading = true;
+    return StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          return Column(
+            children: [
+              SignOutButton(auth: FirebaseAuth.instanceFor(app: app)),
+              Expanded(
+                  child: chats.isNotEmpty
+                      ? Align(
+                          alignment: Alignment.bottomCenter,
+                          child: SingleChildScrollView(
+                            reverse: true,
+                            child: ListView.builder(
+                              itemBuilder: chatItem,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: chats.length,
+                              reverse: false,
+                            ),
+                          ),
+                        )
+                      : const Center(child: Text('Search something!'))),
+              if (loading) const CircularProgressIndicator(),
+              ChatInputBox(
+                controller: controller,
+                onSend: () {
+                  if (controller.text.isNotEmpty) {
+                    final searchedText = controller.text;
+                    chats.add(Content(
+                        role: 'user', parts: [Parts(text: searchedText)]));
+                    controller.clear();
+                    loading = true;
 
-              gemini.chat(chats).then((value) {
-                chats.add(Content(
-                    role: 'model', parts: [Parts(text: value?.output)]));
-                loading = false;
-              });
-            }
-          },
-        ),
-      ],
-    );
+                    gemini.chat(chats).then((value) {
+                      chats.add(Content(
+                          role: 'model', parts: [Parts(text: value?.output)]));
+                      loading = false;
+                    });
+                  }
+                },
+              ),
+            ],
+          );
+        });
   }
 
   Widget chatItem(BuildContext context, int index) {
