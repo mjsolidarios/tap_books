@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
                   case SettingsView.routeName:
                     return SettingsView(controller: settingsController);
                   case ChatView.routeName:
-                    return const ChatView();
+                    return const ChatView(book: null,);
                   case AuthGate.routeName:
                     return const AuthGate();
                   case AuthSplash.routeName:

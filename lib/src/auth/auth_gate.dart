@@ -4,7 +4,6 @@ import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lottie/lottie.dart';
-import 'package:tap_books/src/chat/chat_view.dart';
 import 'package:tap_books/src/home/home_view.dart';
 
 class AuthGate extends StatefulWidget {

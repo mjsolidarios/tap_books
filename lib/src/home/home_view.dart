@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:tap_books/main.dart';
 import 'package:tap_books/src/chat/chat_view.dart';
+import 'package:tap_books/src/home/chat_args.dart';
 import 'package:tap_books/src/settings/settings_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -130,11 +130,11 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             child: ListView(
                                 scrollDirection: Axis.horizontal,
                                 children: snapshot.data!.docs
-                                    .map((e) => Container(
+                                    .map((e) => SizedBox(
                                           width: 170,
                                           child: GestureDetector(
                                             onTap: (){
-                                              Navigator.restorablePushNamed(context, ChatView.routeName);
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ChatView(book: e)));
                                             },
                                             child: Card(
                                               semanticContainer: true,
@@ -158,7 +158,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                             .toString(), maxLines: 2, style: const TextStyle(fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis)),                                                   
                                                        Row(
                                                         children: [
-                                                           Opacity(opacity: 0.5, child: Text((e.data() as Map)[
+                                                           Opacity(opacity: 0.5, child: Text(maxLines: 2, (e.data() as Map)[
                                                                 "author"]
                                                             .toString(), style: TextStyle(fontSize: 12),)),
                                                             Spacer(),
@@ -199,7 +199,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             child: ListView(
                                 scrollDirection: Axis.horizontal,
                                 children: snapshot.data!.docs.reversed
-                                    .map((e) => Container(
+                                    .map((e) => SizedBox(
                                           width: 170,
                                           child: GestureDetector(
                                             onTap: (){
@@ -227,9 +227,12 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                             .toString(), maxLines: 2, style: const TextStyle(fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis)),                                                   
                                                        Row(
                                                         children: [
-                                                           Opacity(opacity: 0.5, child: Text((e.data() as Map)[
+                                                           Opacity(opacity: 0.5, child: Container(
+                                                            width: 100,
+                                                            child: Text(maxLines: 2,(e.data() as Map)[
                                                                 "author"]
-                                                            .toString(), style: TextStyle(fontSize: 12),)),
+                                                            .toString(), style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis,),
+                                                           )),
                                                             Spacer(),
                                                             const Icon(Icons.arrow_forward, size: 20,)
                                                         ],
@@ -249,4 +252,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               ));
         });
   }
+}
+
+class ChatArgs {
+  final String firestoreReference;
+  const ChatArgs(this.firestoreReference);
 }
