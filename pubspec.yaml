@@ -1,5 +1,5 @@
 name: tap_books
-description: "A new Flutter project."
+description: "Smart Book Insights with Gemini."
 
 # Prevent accidental publishing to pub.dev.
 publish_to: 'none'
@@ -55,3 +55,6 @@ flutter:
       - asset: assets/fonts/Poppins/Poppins-Regular.ttf
       - asset: assets/fonts/Poppins/Poppins-Italic.ttf
         style: italic
+  - family: SocialIcons
+    fonts:
+      - asset: packages/firebase_ui_auth/fonts/SocialIcons.ttf

@@ -49,7 +49,14 @@ class MyApp extends StatelessWidget {
           ],
           onGenerateTitle: (BuildContext context) =>
               AppLocalizations.of(context)!.appTitle,
-          theme: ThemeData(fontFamily: "Poppins"),
+          theme: ThemeData(
+            fontFamily: "Poppins",
+            inputDecorationTheme: InputDecorationTheme(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8)
+              )
+            )
+            ),
           darkTheme: ThemeData.dark(),
           themeMode: settingsController.themeMode,
           home: AuthGate()

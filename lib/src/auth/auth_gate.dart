@@ -36,17 +36,15 @@ class _AuthGateState extends State<AuthGate> with TickerProviderStateMixin {
               GoogleProvider(clientId: dotenv.env['GOOGLE_AUTH_CLIENT_ID']!),
             ],
             headerBuilder: (context, constraints, shrinkOffset) {
-              return Padding(
-                padding: const EdgeInsets.all(2),
-                child: AspectRatio(
-                  aspectRatio: 2,
-                  child: Lottie.asset('assets/animations/app_brand_light.json',
+              return Container(
+                child: Lottie.asset('assets/animations/app_brand_light.json',
                       controller: _controller, onLoaded: (composition) {
                     _controller
                       ..duration = composition.duration
                       ..forward();
-                  }),
-                ),
+                  },  height: 300,
+                  width: 300
+                  ),
               );
             },
             subtitleBuilder: (context, action) {
