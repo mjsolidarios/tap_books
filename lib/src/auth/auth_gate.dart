@@ -9,6 +9,8 @@ import 'package:tap_books/src/chat/chat_view.dart';
 class AuthGate extends StatefulWidget {
   const AuthGate({Key? key}) : super(key: key);
 
+  static const routeName = '/auth_gate';
+
   @override
   _AuthGateState createState() => _AuthGateState();
 }

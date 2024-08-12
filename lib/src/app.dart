@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tap_books/src/auth/auth_gate.dart';
-import 'package:tap_books/src/auth/auth_view.dart';
+import 'package:tap_books/src/auth/auth_splash.dart';
 import 'package:tap_books/src/chat/chat_view.dart';
 
-import 'sample_feature/sample_item_details_view.dart';
-import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
 import 'settings/settings_view.dart';
 
@@ -55,11 +53,35 @@ class MyApp extends StatelessWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8)
               )
+            ),
+            textTheme: const TextTheme().apply(
+              bodyColor: Colors.white,
+              displayColor: Colors.white
             )
             ),
           darkTheme: ThemeData.dark(),
           themeMode: settingsController.themeMode,
-          home: AuthGate()
+          home: AuthSplash(),
+          onGenerateRoute: (RouteSettings routeSettings){
+            return MaterialPageRoute<void>(
+              settings: routeSettings,
+              builder: (BuildContext context) { 
+                 switch (routeSettings.name) {
+                  case SettingsView.routeName:
+                    return SettingsView(controller: settingsController);
+                  case ChatView.routeName:
+                    return const ChatView();
+                  case AuthGate.routeName:
+                    return const AuthGate();
+                  case AuthSplash.routeName:
+                  default:
+                    return const AuthSplash();
+                }
+
+              }
+              
+            );
+          }
         );
       },
     );
