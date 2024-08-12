@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
             ),
           darkTheme: ThemeData.dark(),
           themeMode: settingsController.themeMode,
-          home: AuthSplash(),
+          home: const AuthSplash(),
           onGenerateRoute: (RouteSettings routeSettings){
             return MaterialPageRoute<void>(
               settings: routeSettings,

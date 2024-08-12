@@ -41,7 +41,9 @@ class _AuthSplashState extends State<AuthSplash> with TickerProviderStateMixin {
                   }, height: 200, width: 200),
                   OutlinedButton(
                       onPressed: () {
-                        Navigator.restorablePushNamed(context, AuthGate.routeName);
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                        Navigator.pushReplacementNamed(context,  AuthGate.routeName);
+                        
                       },
                       style: const ButtonStyle(
                           backgroundColor:

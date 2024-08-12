@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tap_books/src/chat/chat_view.dart';
+import 'package:tap_books/src/home/home_view.dart';
 
 class AuthGate extends StatefulWidget {
   const AuthGate({Key? key}) : super(key: key);
@@ -67,7 +68,7 @@ class _AuthGateState extends State<AuthGate> with TickerProviderStateMixin {
             },
           );
         }
-        return ChatView();
+        return HomeView();
       },
     );
   }

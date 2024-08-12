@@ -30,7 +30,9 @@ class _ChatViewState extends State<ChatView> {
     return StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          return Column(
+          return Scaffold(
+            appBar: AppBar(),
+            body: Column(
             children: [
               SignOutButton(auth: FirebaseAuth.instanceFor(app: app)),
               Expanded(
@@ -69,6 +71,7 @@ class _ChatViewState extends State<ChatView> {
                 },
               ),
             ],
+          ),
           );
         });
   }
