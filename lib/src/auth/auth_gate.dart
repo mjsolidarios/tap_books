@@ -7,7 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:tap_books/src/home/home_view.dart';
 
 class AuthGate extends StatefulWidget {
-  const AuthGate({Key? key}) : super(key: key);
+  const AuthGate({super.key});
 
   static const routeName = '/auth_gate';
 
@@ -67,7 +67,7 @@ class _AuthGateState extends State<AuthGate> with TickerProviderStateMixin {
             },
           );
         }
-        return HomeView();
+        return const HomeView();
       },
     );
   }

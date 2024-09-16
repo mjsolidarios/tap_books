@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:257869758671:android:e7badb0eb189f240a937ba",
         "android_client_info": {
-          "package_name": "com.tapbooks.app"
+          "package_name": "com.tapbooksai.app"
         }
       },
       "oauth_client": [
@@ -34,7 +34,7 @@
               "client_id": "257869758671-l01jdivla2lbf556inds1epdm9apd4p4.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.tapBooks"
+                "bundle_id": "com.tapbooksai.app"
               }
             }
           ]

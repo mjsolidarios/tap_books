@@ -1,4 +1,4 @@
-package com.example.tap_books
+package com.tapbooksai.app
 
 import io.flutter.embedding.android.FlutterActivity
 

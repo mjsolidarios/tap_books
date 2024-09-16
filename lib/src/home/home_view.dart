@@ -2,12 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tap_books/main.dart';
 import 'package:tap_books/src/chat/chat_view.dart';
-import 'package:tap_books/src/home/chat_args.dart';
 import 'package:tap_books/src/settings/settings_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({super.key});
 
   @override
   _HomeViewState createState() => _HomeViewState();
@@ -43,7 +42,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               appBar: AppBar(
                 leading: IconButton(
                     onPressed: () {
-                      scaffoldKey.currentState!.openDrawer();
+                      scaffoldKey.currentState?.openDrawer();
                     },
                     icon: const Icon(Icons.menu)),
                 actions: [
@@ -79,7 +78,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                 ),
               ),
               body: Padding(
-                padding: EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
                 child: StreamBuilder<QuerySnapshot>(
                     stream: books.snapshots(),
                     builder: (BuildContext context,
@@ -148,7 +147,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                       (e.data() as Map)["image"]
                                                           .toString()),                                                          
                                                   Padding(
-                                                    padding: EdgeInsets.all(10),
+                                                    padding: const EdgeInsets.all(10),
                                                     child: Column(                                                      
                                                        crossAxisAlignment: CrossAxisAlignment.start,  
                                                                                                          
@@ -160,8 +159,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                         children: [
                                                            Opacity(opacity: 0.5, child: Text(maxLines: 2, (e.data() as Map)[
                                                                 "author"]
-                                                            .toString(), style: TextStyle(fontSize: 12),)),
-                                                            Spacer(),
+                                                            .toString(), style: const TextStyle(fontSize: 12),)),
+                                                            const Spacer(),
                                                             const Icon(Icons.arrow_forward, size: 20,)
                                                         ],
                                                        )
@@ -217,7 +216,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                       (e.data() as Map)["image"]
                                                           .toString()),                                                          
                                                   Padding(
-                                                    padding: EdgeInsets.all(10),
+                                                    padding: const EdgeInsets.all(10),
                                                     child: Column(                                                      
                                                        crossAxisAlignment: CrossAxisAlignment.start,  
                                                                                                          
@@ -227,13 +226,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                             .toString(), maxLines: 2, style: const TextStyle(fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis)),                                                   
                                                        Row(
                                                         children: [
-                                                           Opacity(opacity: 0.5, child: Container(
+                                                           Opacity(opacity: 0.5, child: SizedBox(
                                                             width: 100,
                                                             child: Text(maxLines: 2,(e.data() as Map)[
                                                                 "author"]
-                                                            .toString(), style: TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis,),
+                                                            .toString(), style: const TextStyle(fontSize: 12), overflow: TextOverflow.ellipsis,),
                                                            )),
-                                                            Spacer(),
+                                                            const Spacer(),
                                                             const Icon(Icons.arrow_forward, size: 20,)
                                                         ],
                                                        )

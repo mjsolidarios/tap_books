@@ -87,4 +87,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'tapbooks-ad97a.appspot.com',
     measurementId: 'G-MQRLHG2NJ6',
   );
+
 }

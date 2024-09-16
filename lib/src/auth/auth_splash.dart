@@ -4,7 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:tap_books/src/auth/auth_gate.dart';
 
 class AuthSplash extends StatefulWidget {
-  const AuthSplash({Key? key}) : super(key: key);
+  const AuthSplash({super.key});
 
   static const routeName = '/auth_splash';
 

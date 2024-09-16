@@ -9,6 +9,7 @@ import 'src/settings/settings_controller.dart';
 import 'src/settings/settings_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+
 late final FirebaseApp app;
 late final FirebaseAuth auth;
 
