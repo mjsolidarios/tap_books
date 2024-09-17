@@ -37,73 +37,15 @@ class _ChatViewState extends State<ChatView> {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           return Scaffold(
-              appBar: AppBar(),
-              body: ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: Text(
-                      (widget.book?.data() as Map)["title"],
-                      style:
-                          const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Opacity(
-                    opacity: 0.5,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        (widget.book?.data() as Map)["author"],
-                        style: const TextStyle(fontSize: 15),
-                      ),
-                    ),
-                  ),
-                  Padding(padding: const EdgeInsets.all(20), child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Padding(padding: EdgeInsets.fromLTRB(0, 0, 5, 0), child: Icon(Icons.message)),
-                     Flexible(child:  Text(
-                  "Hi ${snapshot.data?.displayName}! What are some key concepts from '${(widget.book?.data() as Map)["title"]}' you want to discuss?"),)
-                    ],
-                  )),
-                  Expanded(
-                      child: chats.isNotEmpty
-                          ? Align(
-                              alignment: Alignment.bottomCenter,
-                              child: SingleChildScrollView(
-                                reverse: true,
-                                child: ListView.builder(
-                                  itemBuilder: chatItem,
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: chats.length,
-                                  reverse: false,
-                                ),
-                              ),
-                            )
-                          : const Center(child: Text(""))),
-                  if (loading) const SizedBox(width: 200, child: Text("..."),),
-                  ChatInputBox(
-                    controller: controller,
-                    onSend: () {
-                      if (controller.text.isNotEmpty) {
-                        final searchedText = controller.text;
-                        chats.add(Content(
-                            role: 'user', parts: [Parts(text: searchedText)]));
-                        controller.clear();
-                        loading = true;
-
-                        gemini.chat(chats).then((value) {
-                          chats.add(Content(
-                              role: 'model',
-                              parts: [Parts(text: value?.output)]));
-                          loading = false;
-                        });
-                      }
-                    },
-                  ),
-                ],
-              ));
+            appBar: AppBar(),
+            body: Column(
+              children: [
+                Text(snapshot.data.toString()),
+                Text("======================================="),
+                Text(widget.book != null?"with data":"without data")
+              ],
+            ),
+          );
         });
   }
 

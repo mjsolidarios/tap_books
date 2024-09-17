@@ -202,7 +202,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                           width: 170,
                                           child: GestureDetector(
                                             onTap: (){
-                                             Navigator.restorablePushNamed(context, ChatView.routeName);
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ChatView(book: e)));
                                             },
                                             child: Card(
                                               semanticContainer: true,
