@@ -66,3 +66,100 @@ Scaffold(
                   ),
                 ],
               ))
+
+
+
+
+
+
+
+
+
+
+
+
+
+               Column(
+              children: [
+                Text(snapshot.data.toString()),
+                Text("======================================="),
+                Text(widget.book != null?"with data":"without data")
+              ],
+            ),
+
+
+            Container(
+                                              child: Text((snapshot.data?.data()
+                                                  as Map)["title"]),
+                                            )
+
+
+                                            SizedBox(
+                                    width: 170,
+                                    height: 200,
+                                    child: FutureBuilder(
+                                        future: (e as DocumentReference).get(),
+                                        builder: (context, snapshot) {
+                                          return GestureDetector(
+                                              onTap: () {},
+                                              child: Card(                                                
+                                                  semanticContainer: true,
+                                                  clipBehavior: Clip
+                                                      .antiAliasWithSaveLayer,
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                          (snapshot.data?.data()
+                                                              as Map)["title"]),
+                                                      Text(
+                                                          (snapshot.data?.data()
+                                                              as Map)["desc"]),
+                                                    ],
+                                                  )));
+                                        }),
+                                  )
+
+
+
+                                   Expanded(
+                                  child: chats.isNotEmpty
+                                      ? Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: SingleChildScrollView(
+                                            reverse: true,
+                                            child: ListView.builder(
+                                              itemBuilder: chatItem,
+                                              shrinkWrap: true,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemCount: chats.length,
+                                              reverse: false,
+                                            ),
+                                          ),
+                                        )
+                                      : const Center(child: Text(""))),
+                              if (loading)
+                                const SizedBox(
+                                  width: 200,
+                                  child: Text("..."),
+                                ),
+                              ChatInputBox(
+                                controller: controller,
+                                onSend: () {
+                                  if (controller.text.isNotEmpty) {
+                                    final searchedText = controller.text;
+                                    chats.add(Content(
+                                        role: 'user',
+                                        parts: [Parts(text: searchedText)]));
+                                    controller.clear();
+                                    loading = true;
+
+                                    gemini.chat(chats).then((value) {
+                                      chats.add(Content(
+                                          role: 'model',
+                                          parts: [Parts(text: value?.output)]));
+                                      loading = false;
+                                    });
+                                  }
+                                },
+                              ),

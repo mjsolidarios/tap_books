@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
       listenable: settingsController,
       builder: (BuildContext context, Widget? child) {
         return MaterialApp(
-          restorationScopeId: 'app',
+          restorationScopeId: 'app',          
           localizationsDelegates: const [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
               AppLocalizations.of(context)!.appTitle,
           theme: ThemeData(
             fontFamily: "Poppins",
+            scaffoldBackgroundColor: const Color(0x00191b23),
             inputDecorationTheme: InputDecorationTheme(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8)

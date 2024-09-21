@@ -26,6 +26,11 @@ class _ChatViewState extends State<ChatView> {
   set loading(bool set) => setState(() => _loading = set);
   final List<Content> chats = [];
 
+  List<String> _prompts = [
+    "jkljkljkll",
+    "ghjghjghhj"
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -33,19 +38,186 @@ class _ChatViewState extends State<ChatView> {
 
   @override
   Widget build(BuildContext context) {
+   
     return StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           return Scaffold(
-            appBar: AppBar(),
-            body: Column(
-              children: [
-                Text(snapshot.data.toString()),
-                Text("======================================="),
-                Text(widget.book != null?"with data":"without data")
-              ],
-            ),
-          );
+              appBar: AppBar(),
+              //backgroundColor: const Color(0x00191b23),
+              body: widget.book != null
+                  ? Expanded(child: ListView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: Text(
+                            (widget.book?.data() as Map)["title"],
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Opacity(
+                          opacity: 0.5,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Text(
+                              (widget.book?.data() as Map)["author"],
+                              style: const TextStyle(fontSize: 15),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: 10,
+                        ),
+                        Container(
+                          height: 1000,
+                          decoration: const BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadiusDirectional.only(
+                                topStart: Radius.circular(30),
+                                topEnd: Radius.circular(30)),
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                          child: Icon(Icons.message)),
+                                      Flexible(
+                                        child: Text(
+                                            "Hi ${snapshot.data?.displayName}! What are some key concepts from '${(widget.book?.data() as Map)["title"]}' you want to discuss?"),
+                                      )
+                                    ],
+                                  )),
+                              SizedBox(
+                                height: 180,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: widget.book != null &&
+                                          (widget.book?.data()
+                                                  as Map)["book_prompts"] !=
+                                              null
+                                      ? (((widget.book?.data()
+                                              as Map)["book_prompts"]) as List)
+                                          .map(
+                                            (e) => FutureBuilder(
+                                                future: (e as DocumentReference)
+                                                    .get(),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot.hasError) {
+                                                    return const Text(
+                                                        "An error occured.");
+                                                  }
+
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return const SizedBox(
+                                                      width: double.infinity,
+                                                      child: Column(
+                                                        children: [
+                                                          CircularProgressIndicator()
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }
+                                                  return SizedBox(
+                                                    width: 200,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _prompts.add((snapshot.data?.data() as Map)["prompt"]);
+                                                        });
+                                                       
+                                                      },
+                                                      child: Card(
+                                                        child: Padding(
+                                                            padding:
+                                                                const EdgeInsets.all(
+                                                                    20),
+                                                            child: Stack(
+                                                              children: [
+                                                                Opacity(
+                                                                  opacity: 0.5,
+                                                                  child: Align(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .topLeft,
+                                                                    child: Text(
+                                                                        maxLines:
+                                                                            2,
+                                                                        overflow:
+                                                                            TextOverflow
+                                                                                .ellipsis,
+                                                                        (snapshot
+                                                                            .data
+                                                                            ?.data() as Map)["title"]),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .only(
+                                                                          top:
+                                                                              45),
+                                                                  child: Align(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .topLeft,
+                                                                    child: Text(
+                                                                        style:
+                                                                            const TextStyle(
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                        (snapshot
+                                                                            .data
+                                                                            ?.data() as Map)["desc"]),
+                                                                  ),
+                                                                ),
+                                                                const Spacer(),
+                                                                const Positioned(
+                                                                    bottom: 0,
+                                                                    right: 0,
+                                                                    child: Icon(
+                                                                      Icons
+                                                                          .arrow_forward,
+                                                                      size: 20,
+                                                                    ))
+                                                              ],
+                                                            )),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
+                                          )
+                                          .toList()
+                                      : [
+                                          const Padding(
+                                              padding: EdgeInsets.all(20),
+                                              child: Center(
+                                                  child: Opacity(
+                                                      opacity: 0.5,
+                                                      child: Text(
+                                                          "No prompts available yet."))))
+                                        ],
+                                ),
+                              ),   
+                              ..._prompts.map((e)=>Text(e))                                                    
+                            ],
+                          ),
+                        ),                        
+                      ],
+                    ))
+                  : const Text("No Data Received"));
         });
   }
 
@@ -54,13 +226,12 @@ class _ChatViewState extends State<ChatView> {
 
     return Card(
       elevation: 0,
-      color:
-          content.role == 'model' ? Colors.black45 : Colors.transparent,
+      color: content.role == 'model' ? Colors.black45 : Colors.transparent,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20,0,20,0),
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [            
+          children: [
             Markdown(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
