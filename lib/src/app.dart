@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
               AppLocalizations.of(context)!.appTitle,
           theme: ThemeData(
             fontFamily: "Poppins",
-            scaffoldBackgroundColor: const Color(0x00191b23),
+            scaffoldBackgroundColor: settingsController.themeMode == ThemeMode.dark? const Color(0x00191b23): const Color.fromARGB(255, 244, 244, 244),
             inputDecorationTheme: InputDecorationTheme(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8)
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
             )
             ),
           darkTheme: ThemeData.dark(),
-          themeMode: settingsController.themeMode,
+          themeMode: ThemeMode.dark,
           home: const AuthSplash(),
           onGenerateRoute: (RouteSettings routeSettings){
             return MaterialPageRoute<void>(
@@ -71,9 +71,9 @@ class MyApp extends StatelessWidget {
                   case SettingsView.routeName:
                     return SettingsView(controller: settingsController);
                   case ChatView.routeName:
-                    return const ChatView(book: null,);
+                    return ChatView(book: null, controller: settingsController);
                   case AuthGate.routeName:
-                    return const AuthGate();
+                    return AuthGate(controller: settingsController);
                   case AuthSplash.routeName:
                   default:
                     return const AuthSplash();

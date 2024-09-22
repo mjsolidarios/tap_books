@@ -1,11 +1,8 @@
-import 'package:card_loading/card_loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:jumping_dot/jumping_dot.dart';
+import 'package:tap_books/src/settings/settings_controller.dart';
 import 'package:tap_books/src/widgets/chat_card.dart';
 import 'package:tap_books/src/widgets/chat_message.dart';
 import 'package:tap_books/src/widgets/dots_progress.dart';
@@ -14,9 +11,11 @@ import 'package:uuid/uuid.dart';
 var uuid = Uuid();
 
 class ChatView extends StatefulWidget {
-  const ChatView({super.key, this.book});
+  const ChatView({super.key, this.book, required this.controller});
 
   final QueryDocumentSnapshot? book;
+
+  final SettingsController controller;
 
   static const routeName = "/chat";
 
@@ -27,7 +26,17 @@ class ChatView extends StatefulWidget {
 class _ChatViewState extends State<ChatView> {
   final List<Widget> promptList = [];
   bool isGeminiLoading = false;
-  ScrollController _scrollController = new ScrollController();
+  final ScrollController _scrollController = new ScrollController();
+  
+  Color getThemeColor() {
+    switch (widget.controller.themeMode) {
+      case ThemeMode.light:
+        return Colors.white;
+      default:
+      return Colors.black;
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     final gemini = Gemini.instance;
@@ -38,7 +47,9 @@ class _ChatViewState extends State<ChatView> {
           ? ListView(
               scrollDirection: Axis.horizontal,
               children: (widget.book!.data() as Map)["book_prompts"] != null
-                  ? (((widget.book?.data() as Map)["book_prompts"]) as List)
+                  ? [
+                    const SizedBox(width: 20),
+                    ...(((widget.book?.data() as Map)["book_prompts"]) as List)
                       .map((e) => FutureBuilder(
                           future: (e as DocumentReference).get(),
                           builder: (context, snapshot) {
@@ -57,9 +68,6 @@ class _ChatViewState extends State<ChatView> {
                               onTap: () {
                                 final searchedText =
                                     (snapshot.data?.data() as Map)["prompt"];
-                                print(
-                                    "========================================");
-                                print(searchedText);
 
                                 chats.add(Content(
                                     role: 'user',
@@ -83,7 +91,9 @@ class _ChatViewState extends State<ChatView> {
                                     promptList.add(ChatMessage(
                                         isUser: false,
                                         messageContent: value?.output));
-                                  });
+                                  });   
+
+                                  //print((promptList.last as ChatMessage).messageContent.toString());                              
 
                                   _scrollController.animateTo(
                                     _scrollController.position.maxScrollExtent,
@@ -92,9 +102,11 @@ class _ChatViewState extends State<ChatView> {
                                   );
                                 });
                               },
+                              isActive: promptList.isNotEmpty && promptList.last.runtimeType == ChatMessage?(promptList.last as ChatMessage).messageContent == (snapshot.data?.data() as Map)["desc"]:false,
                             );
                           }))
                       .toList()
+                  ]
                   : [
                       const Padding(
                           padding: EdgeInsets.all(20),
@@ -111,7 +123,7 @@ class _ChatViewState extends State<ChatView> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
+            0.0,
             curve: Curves.easeOut,
             duration: const Duration(milliseconds: 300),
           );
@@ -146,9 +158,9 @@ class _ChatViewState extends State<ChatView> {
             height: 20,
           ),
           Container(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadiusDirectional.only(
+            decoration:  BoxDecoration(
+              color: getThemeColor(),
+              borderRadius: const BorderRadiusDirectional.only(
                   topStart: Radius.circular(30), topEnd: Radius.circular(30)),
             ),
             child: Column(
@@ -183,7 +195,7 @@ class _ChatViewState extends State<ChatView> {
                 isGeminiLoading ? const DotsProgress() : Container(),
                 promptList.length > 1
                     ? Container()
-                    : const SizedBox(height: 200),
+                    : const SizedBox(height: 500),
                 MaterialButton(
                   onPressed: () {
                     setState(() {

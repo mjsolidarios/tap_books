@@ -5,22 +5,35 @@ class ChatCard extends StatefulWidget {
       {super.key,
       required this.title,
       required this.description,
-      required this.onTap});
+      required this.onTap,
+      this.isActive = false
+      });
 
   final String title;
   final String description;
   final Function onTap;
+  final bool isActive;
 
   @override
   State<ChatCard> createState() => _ChatCardState();
 }
 
 class _ChatCardState extends State<ChatCard> {
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {   
     return InkWell(
-      onTap: ()=>widget.onTap(),
+      onTap: (){
+        widget.onTap();
+      },
       child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(
+            color: widget.isActive?Colors.blue:Colors.transparent,
+            width: 2
+          )
+        ),
         child: SizedBox(
           width: 200,
           child: Padding(
@@ -52,7 +65,15 @@ class _ChatCardState extends State<ChatCard> {
                     child: Icon(
                       Icons.arrow_forward,
                       size: 20,
-                    ))
+                    )),
+                    widget.isActive?const Positioned(
+                      right: 0,
+                      top: 0,
+                      child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(),
+                    )):Container()
               ],
             ))
         ),
