@@ -29,7 +29,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       for (var doc in snapshot.docs) {
         print('${doc.id} => ${doc.data()}');
       }
-    }).catchError((error) => print("Failed to fetch books: $error"));
+    }).catchError((error){print("Failed to fetch books: $error");});
   }
 
   @override

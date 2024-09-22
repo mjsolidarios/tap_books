@@ -110,10 +110,9 @@ class _ChatViewState extends State<ChatView> {
                   : [
                       const Padding(
                           padding: EdgeInsets.all(20),
-                          child: Expanded(
-                              child: Text(
-                                  textAlign: TextAlign.center,
-                                  "This book doesn't have a content yet :(")))
+                          child: Text(
+                              textAlign: TextAlign.center,
+                              "This book doesn't have a content yet :("))
                     ],
             )
           : const DotsProgress(),
@@ -210,7 +209,7 @@ class _ChatViewState extends State<ChatView> {
                   },
                   child: const Text("Browse for more concepts"),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 )
               ],

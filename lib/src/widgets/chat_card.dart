@@ -26,14 +26,15 @@ class _ChatCardState extends State<ChatCard> {
       onTap: (){
         widget.onTap();
       },
-      child: Card(
-        shape: RoundedRectangleBorder(
+      child: Padding(padding: EdgeInsets.all(5), child: Container(
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(31, 50, 50, 50),
           borderRadius: BorderRadius.circular(20),
-          side: BorderSide(
+          border: Border.all(
             color: widget.isActive?Colors.blue:Colors.transparent,
             width: 2
           )
-        ),
+        ),        
         child: SizedBox(
           width: 200,
           child: Padding(
@@ -58,7 +59,6 @@ class _ChatCardState extends State<ChatCard> {
                           ),
                           widget.description),
                     )),
-                const Spacer(),
                 const Positioned(
                     bottom: 0,
                     right: 0,
@@ -77,7 +77,7 @@ class _ChatCardState extends State<ChatCard> {
               ],
             ))
         ),
-      ),
+      )),
     );
   }
 }
