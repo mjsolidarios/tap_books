@@ -94,7 +94,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               body: ListView(
                 children: [
                   SizedBox(
-                    height: 800,
+                    height: 1000,
                     child: StreamBuilder<QuerySnapshot>(
                         stream: books.snapshots(),
                         builder: (BuildContext context,
