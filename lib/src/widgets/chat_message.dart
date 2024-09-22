@@ -25,7 +25,7 @@ class _ChatMessageState extends State<ChatMessage> {
         children: widget.isUser
             ? [
                 Expanded(
-                  child:Text(widget.messageContent ?? ""),
+                  child:Text(widget.messageContent ?? "", textAlign: TextAlign.right,),
                 ),
                 Transform.flip(
                   flipX: true,

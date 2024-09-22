@@ -26,27 +26,104 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   final List<Widget> promptList = [];
-  bool isGeminiLoading = false;  
-
+  bool isGeminiLoading = false;
+  ScrollController _scrollController = new ScrollController();
   @override
   Widget build(BuildContext context) {
     final gemini = Gemini.instance;
-   
     List<Content> chats = [];
+    Widget ConceptList = SizedBox(
+      height: 180,
+      child: widget.book != null
+          ? ListView(
+              scrollDirection: Axis.horizontal,
+              children: (widget.book!.data() as Map)["book_prompts"] != null
+                  ? (((widget.book?.data() as Map)["book_prompts"]) as List)
+                      .map((e) => FutureBuilder(
+                          future: (e as DocumentReference).get(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return const Text("An error occurred.");
+                            }
+
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Container();
+                            }
+                            return ChatCard(
+                              title: (snapshot.data?.data() as Map)["title"],
+                              description:
+                                  (snapshot.data?.data() as Map)["desc"],
+                              onTap: () {
+                                final searchedText =
+                                    (snapshot.data?.data() as Map)["prompt"];
+                                print(
+                                    "========================================");
+                                print(searchedText);
+
+                                chats.add(Content(
+                                    role: 'user',
+                                    parts: [Parts(text: searchedText)]));
+
+                                setState(() {
+                                  isGeminiLoading = true;
+                                  promptList.add(ChatMessage(
+                                      isUser: true,
+                                      messageContent: (snapshot.data?.data()
+                                          as Map)["desc"]));
+                                });
+
+                                gemini.chat(chats).then((value) {
+                                  chats.add(Content(
+                                      role: 'model',
+                                      parts: [Parts(text: value?.output)]));
+
+                                  setState(() {
+                                    isGeminiLoading = false;
+                                    promptList.add(ChatMessage(
+                                        isUser: false,
+                                        messageContent: value?.output));
+                                  });
+
+                                  _scrollController.animateTo(
+                                    _scrollController.position.maxScrollExtent,
+                                    curve: Curves.easeOut,
+                                    duration: const Duration(milliseconds: 300),
+                                  );
+                                });
+                              },
+                            );
+                          }))
+                      .toList()
+                  : [
+                      const Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Expanded(
+                              child: Text(
+                                  textAlign: TextAlign.center,
+                                  "This book doesn't have a content yet :(")))
+                    ],
+            )
+          : const DotsProgress(),
+    );
     return Scaffold(
       appBar: AppBar(),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     setState(() {
-      //       promptList.add("Test");
-      //     });
-      //   },
-      //   child: const Icon(
-      //     Icons.add,
-      //     size: 20,
-      //   ),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            curve: Curves.easeOut,
+            duration: const Duration(milliseconds: 300),
+          );
+        },
+        child: const Icon(
+          Icons.arrow_drop_up,
+          size: 20,
+        ),
+      ),
       body: ListView(
+        controller: _scrollController,
+        shrinkWrap: true,
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -101,89 +178,28 @@ class _ChatViewState extends State<ChatView> {
                         },
                       )
                     : Container(),
-                SizedBox(
-                  height: 180,
-                  child: widget.book != null
-                      ? ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: (widget.book!.data()
-                                      as Map)["book_prompts"] !=
-                                  null
-                              ? (((widget.book?.data() as Map)["book_prompts"])
-                                      as List)
-                                  .map((e) => FutureBuilder(
-                                      future: (e as DocumentReference).get(),
-                                      builder: (context, snapshot) {
-                                        if (snapshot.hasError) {
-                                          return const Text(
-                                              "An error occurred.");
-                                        }
+                ConceptList,
+                ...promptList.map((e) => e),
+                isGeminiLoading ? const DotsProgress() : Container(),
+                promptList.length > 1
+                    ? Container()
+                    : const SizedBox(height: 200),
+                MaterialButton(
+                  onPressed: () {
+                    setState(() {
+                      promptList.add(ConceptList);
+                    });
 
-                                        if (snapshot.connectionState ==
-                                            ConnectionState.waiting) {
-                                          return Container();
-                                        }
-                                        return ChatCard(
-                                          title: (snapshot.data?.data()
-                                              as Map)["title"],
-                                          description: (snapshot.data?.data()
-                                              as Map)["desc"],
-                                          onTap: () {
-                                            final searchedText = (snapshot.data
-                                                ?.data() as Map)["prompt"];
-                                                print("========================================");
-                                                print(searchedText);
-
-                                            chats.add(Content(
-                                                role: 'user',
-                                                parts: [
-                                                  Parts(text: searchedText)
-                                                ]));
-                                            
-                                            setState(() {
-                                              isGeminiLoading = true;
-                                              promptList.add(ChatMessage(
-                                                  isUser: true,
-                                                  messageContent:
-                                                      (snapshot.data?.data()
-                                                          as Map)["desc"]));
-                                            });
-
-                                            gemini.chat(chats).then((value) {
-                                              chats.add(Content(
-                                                  role: 'model',
-                                                  parts: [
-                                                    Parts(text: value?.output)
-                                                  ]));
-                                              
-
-                                              setState(() {
-                                              isGeminiLoading = false;
-                                              promptList.add(ChatMessage(
-                                                  isUser: false,
-                                                  messageContent:
-                                                      value?.output));
-                                              });
-                                            });
-                                          },
-                                        );
-                                      }))
-                                  .toList()
-                              : [
-                                  const Padding(
-                                      padding: EdgeInsets.all(20),
-                                      child: Expanded(
-                                          child: Text(
-                                              textAlign: TextAlign.center,
-                                              "This book doesn't have a content yet :(")))
-                                ],
-                        )
-                      : const DotsProgress(),
+                    _scrollController.animateTo(
+                      _scrollController.position.maxScrollExtent,
+                      curve: Curves.easeOut,
+                      duration: const Duration(milliseconds: 300),
+                    );
+                  },
+                  child: const Text("Browse for more concepts"),
                 ),
-                ...promptList.map((e) => e),     
-                isGeminiLoading?const DotsProgress():Container(),          
-                const SizedBox(
-                  height: 500,
+                SizedBox(
+                  height: 20,
                 )
               ],
             ),
