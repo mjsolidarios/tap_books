@@ -55,10 +55,10 @@ class MyApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8)
               )
             ),
-            textTheme: const TextTheme().apply(
-              bodyColor: Colors.white,
-              displayColor: Colors.white
-            )
+            // textTheme: const TextTheme().apply(
+            //   bodyColor: Colors.white,
+            //   displayColor: Colors.white
+            // )
             ),
           darkTheme: ThemeData.dark(),
           themeMode: ThemeMode.dark,
