@@ -1,9 +1,17 @@
+import 'package:card_loading/card_loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:tap_books/src/widgets/chat_input_box.dart';
+import 'package:jumping_dot/jumping_dot.dart';
+import 'package:tap_books/src/widgets/chat_card.dart';
+import 'package:tap_books/src/widgets/chat_message.dart';
+import 'package:tap_books/src/widgets/dots_progress.dart';
+import 'package:uuid/uuid.dart';
+
+var uuid = Uuid();
 
 class ChatView extends StatefulWidget {
   const ChatView({super.key, this.book});
@@ -17,228 +25,170 @@ class ChatView extends StatefulWidget {
 }
 
 class _ChatViewState extends State<ChatView> {
-  final controller = TextEditingController();
-  final gemini = Gemini.instance;
-  bool _loading = false;
-
-  bool get loading => _loading;
-
-  set loading(bool set) => setState(() => _loading = set);
-  final List<Content> chats = [];
-
-  List<String> _prompts = [
-    "jkljkljkll",
-    "ghjghjghhj"
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final List<Widget> promptList = [];
+  bool isGeminiLoading = false;  
 
   @override
   Widget build(BuildContext context) {
+    final gemini = Gemini.instance;
    
-    return StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          return Scaffold(
-              appBar: AppBar(),
-              //backgroundColor: const Color(0x00191b23),
-              body: widget.book != null
-                  ? Expanded(child: ListView(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          child: Text(
-                            (widget.book?.data() as Map)["title"],
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Opacity(
-                          opacity: 0.5,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Text(
-                              (widget.book?.data() as Map)["author"],
-                              style: const TextStyle(fontSize: 15),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          height: 10,
-                        ),
-                        Container(
-                          height: 1000,
-                          decoration: const BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadiusDirectional.only(
-                                topStart: Radius.circular(30),
-                                topEnd: Radius.circular(30)),
-                          ),
-                          child: Column(
-                            children: [
-                              Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(0, 0, 5, 0),
-                                          child: Icon(Icons.message)),
-                                      Flexible(
-                                        child: Text(
-                                            "Hi ${snapshot.data?.displayName}! What are some key concepts from '${(widget.book?.data() as Map)["title"]}' you want to discuss?"),
-                                      )
-                                    ],
-                                  )),
-                              SizedBox(
-                                height: 180,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: widget.book != null &&
-                                          (widget.book?.data()
-                                                  as Map)["book_prompts"] !=
-                                              null
-                                      ? (((widget.book?.data()
-                                              as Map)["book_prompts"]) as List)
-                                          .map(
-                                            (e) => FutureBuilder(
-                                                future: (e as DocumentReference)
-                                                    .get(),
-                                                builder: (context, snapshot) {
-                                                  if (snapshot.hasError) {
-                                                    return const Text(
-                                                        "An error occured.");
-                                                  }
-
-                                                  if (snapshot
-                                                          .connectionState ==
-                                                      ConnectionState.waiting) {
-                                                    return const SizedBox(
-                                                      width: double.infinity,
-                                                      child: Column(
-                                                        children: [
-                                                          CircularProgressIndicator()
-                                                        ],
-                                                      ),
-                                                    );
-                                                  }
-                                                  return SizedBox(
-                                                    width: 200,
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        setState(() {
-                                                          _prompts.add((snapshot.data?.data() as Map)["prompt"]);
-                                                        });
-                                                       
-                                                      },
-                                                      child: Card(
-                                                        child: Padding(
-                                                            padding:
-                                                                const EdgeInsets.all(
-                                                                    20),
-                                                            child: Stack(
-                                                              children: [
-                                                                Opacity(
-                                                                  opacity: 0.5,
-                                                                  child: Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .topLeft,
-                                                                    child: Text(
-                                                                        maxLines:
-                                                                            2,
-                                                                        overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
-                                                                        (snapshot
-                                                                            .data
-                                                                            ?.data() as Map)["title"]),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                          top:
-                                                                              45),
-                                                                  child: Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .topLeft,
-                                                                    child: Text(
-                                                                        style:
-                                                                            const TextStyle(
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
-                                                                        (snapshot
-                                                                            .data
-                                                                            ?.data() as Map)["desc"]),
-                                                                  ),
-                                                                ),
-                                                                const Spacer(),
-                                                                const Positioned(
-                                                                    bottom: 0,
-                                                                    right: 0,
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .arrow_forward,
-                                                                      size: 20,
-                                                                    ))
-                                                              ],
-                                                            )),
-                                                      ),
-                                                    ),
-                                                  );
-                                                }),
-                                          )
-                                          .toList()
-                                      : [
-                                          const Padding(
-                                              padding: EdgeInsets.all(20),
-                                              child: Center(
-                                                  child: Opacity(
-                                                      opacity: 0.5,
-                                                      child: Text(
-                                                          "No prompts available yet."))))
-                                        ],
+    List<Content> chats = [];
+    return Scaffold(
+      appBar: AppBar(),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     setState(() {
+      //       promptList.add("Test");
+      //     });
+      //   },
+      //   child: const Icon(
+      //     Icons.add,
+      //     size: 20,
+      //   ),
+      // ),
+      body: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: Text(
+              (widget.book?.data() as Map)["title"],
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Opacity(
+            opacity: 0.5,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                (widget.book?.data() as Map)["author"],
+                style: const TextStyle(fontSize: 15),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadiusDirectional.only(
+                  topStart: Radius.circular(30), topEnd: Radius.circular(30)),
+            ),
+            child: Column(
+              children: [
+                (widget.book!.data() as Map)["book_prompts"] != null
+                    ? StreamBuilder(
+                        stream: FirebaseAuth.instance.authStateChanges(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return const Text("An error occurred.");
+                          }
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const SizedBox(
+                              width: double.infinity,
+                              child: Center(
+                                child: SizedBox(
+                                  height: 180,
                                 ),
-                              ),   
-                              ..._prompts.map((e)=>Text(e))                                                    
-                            ],
-                          ),
-                        ),                        
-                      ],
-                    ))
-                  : const Text("No Data Received"));
-        });
-  }
+                              ),
+                            );
+                          }
+                          return ChatMessage(
+                              isUser: false,
+                              messageContent:
+                                  "Hi ${snapshot.data?.displayName}! What are some key concepts from '${(widget.book?.data() as Map)["title"]}' you want to discuss?");
+                        },
+                      )
+                    : Container(),
+                SizedBox(
+                  height: 180,
+                  child: widget.book != null
+                      ? ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: (widget.book!.data()
+                                      as Map)["book_prompts"] !=
+                                  null
+                              ? (((widget.book?.data() as Map)["book_prompts"])
+                                      as List)
+                                  .map((e) => FutureBuilder(
+                                      future: (e as DocumentReference).get(),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasError) {
+                                          return const Text(
+                                              "An error occurred.");
+                                        }
 
-  Widget chatItem(BuildContext context, int index) {
-    final Content content = chats[index];
+                                        if (snapshot.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return Container();
+                                        }
+                                        return ChatCard(
+                                          title: (snapshot.data?.data()
+                                              as Map)["title"],
+                                          description: (snapshot.data?.data()
+                                              as Map)["desc"],
+                                          onTap: () {
+                                            final searchedText = (snapshot.data
+                                                ?.data() as Map)["prompt"];
+                                                print("========================================");
+                                                print(searchedText);
 
-    return Card(
-      elevation: 0,
-      color: content.role == 'model' ? Colors.black45 : Colors.transparent,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Markdown(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                data:
-                    content.parts?.lastOrNull?.text ?? 'cannot generate data!'),
-          ],
-        ),
+                                            chats.add(Content(
+                                                role: 'user',
+                                                parts: [
+                                                  Parts(text: searchedText)
+                                                ]));
+                                            
+                                            setState(() {
+                                              isGeminiLoading = true;
+                                              promptList.add(ChatMessage(
+                                                  isUser: true,
+                                                  messageContent:
+                                                      (snapshot.data?.data()
+                                                          as Map)["desc"]));
+                                            });
+
+                                            gemini.chat(chats).then((value) {
+                                              chats.add(Content(
+                                                  role: 'model',
+                                                  parts: [
+                                                    Parts(text: value?.output)
+                                                  ]));
+                                              
+
+                                              setState(() {
+                                              isGeminiLoading = false;
+                                              promptList.add(ChatMessage(
+                                                  isUser: false,
+                                                  messageContent:
+                                                      value?.output));
+                                              });
+                                            });
+                                          },
+                                        );
+                                      }))
+                                  .toList()
+                              : [
+                                  const Padding(
+                                      padding: EdgeInsets.all(20),
+                                      child: Expanded(
+                                          child: Text(
+                                              textAlign: TextAlign.center,
+                                              "This book doesn't have a content yet :(")))
+                                ],
+                        )
+                      : const DotsProgress(),
+                ),
+                ...promptList.map((e) => e),     
+                isGeminiLoading?const DotsProgress():Container(),          
+                const SizedBox(
+                  height: 500,
+                )
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
