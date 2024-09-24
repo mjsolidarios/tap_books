@@ -163,7 +163,6 @@ class _ChatViewState extends State<ChatView> {
                   topStart: Radius.circular(30), topEnd: Radius.circular(30)),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 (widget.book!.data() as Map)["book_prompts"] != null
                     ? StreamBuilder(

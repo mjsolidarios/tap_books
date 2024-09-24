@@ -22,10 +22,14 @@ class _ChatMessageState extends State<ChatMessage> {
     return Padding(
         padding: const EdgeInsets.all(5),
         child: widget.isUser
-            ? Row(children: [
+            ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+              Text(textLength.toString()),
               Spacer(),
                 Container(
-                  width: textLength != null && textLength < 25 ? textLength*12: MediaQuery.sizeOf(context).width / 1.3,
+                  width: textLength != null && textLength < 25 ? (textLength*10)+50: MediaQuery.sizeOf(context).width / 1.3,
                   decoration: widget.isUser
                       ? const BoxDecoration(
                           color: Color.fromARGB(255, 45, 45, 45),
@@ -38,12 +42,13 @@ class _ChatMessageState extends State<ChatMessage> {
                     padding: const EdgeInsets.all(20),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: widget.isUser
                           ? [
                               Expanded(
                                 child: Text(
                                   widget.messageContent ?? "",
-                                  textAlign: TextAlign.right,
+                                  textAlign: TextAlign.left,
                                 ),
                               ),
                               Transform.flip(
