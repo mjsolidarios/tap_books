@@ -26,7 +26,6 @@ class _ChatMessageState extends State<ChatMessage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-              Text(textLength.toString()),
               Spacer(),
                 Container(
                   width: textLength != null && textLength < 25 ? (textLength*10)+50: MediaQuery.sizeOf(context).width / 1.3,
