@@ -366,6 +366,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             ],
                           );
                         }),
+                  ),
+                  const SizedBox(
+                    height: 50,
                   )
                 ],
               ));
