@@ -28,7 +28,7 @@ class _ChatCardState extends State<ChatCard> {
       },
       child: Padding(padding: EdgeInsets.all(5), child: Container(
         decoration: BoxDecoration(
-          color: const Color.fromARGB(31, 50, 50, 50),
+          color: const Color.fromARGB(31, 255, 255, 255),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: widget.isActive?Colors.blue:Colors.transparent,
